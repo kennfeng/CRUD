@@ -4,12 +4,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "P Search Engine!"
+    return "search engine"
 
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('query')
-    return jsonify({"message": "Search functionality to be implemented!"})
+    return jsonify({"message": "search func"})
 
 if __name__ == "__main__":
     app.run(debug=True)
