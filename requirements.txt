@@ -1,4 +1,4 @@
-"Flask" 
-"SQLAlchemy" 
-"BeautifulSoup4" 
-"Requests" 
+Flask 
+SQLAlchemy
+BeautifulSoup4
+Requests
