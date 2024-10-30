@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+# imports
 from extensions import db
 from models import User
-# CRUD
 from CRUD import crud_bp
 
 def create_app():

@@ -4,7 +4,7 @@ from models import User
 
 crud_bp = Blueprint('crud', __name__)
 
-# Create record
+# create record
 @crud_bp.route('/add_user/<username>/<email>')
 def add_user(username, email):
     new_user = User(username=username, email=email)
@@ -12,13 +12,13 @@ def add_user(username, email):
     db.session.commit()
     return f'User {username} added.'
 
-# Read record
+# read record
 @crud_bp.route('/users')
 def get_users():
     users = User.query.all()
     return '<br>'.join([f"User_id: {user.id} - User: {user.username}, Email: {user.email}" for user in users])
 
-# Update record
+# update record
 @crud_bp.route('/update_user/<int:user_id>/<new_email>')
 def update_user(user_id, new_email):
     user = User.query.get(user_id)
@@ -28,7 +28,7 @@ def update_user(user_id, new_email):
         return f'User {user.username} updated to {new_email}.'
     return 'User not found.'
 
-# Delete record
+# delete record
 @crud_bp.route('/delete_user/<int:user_id>')
 def delete_user(user_id):
     user = User.query.get(user_id)
