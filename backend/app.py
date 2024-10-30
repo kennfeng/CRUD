@@ -1,15 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "search engine"
-
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get('query')
-    return jsonify({"message": "search func"})
+    return 'a'
 
 if __name__ == "__main__":
     app.run(debug=True)
