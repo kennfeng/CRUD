@@ -16,7 +16,7 @@ def add_user(username, email):
 @crud_bp.route('/users')
 def get_users():
     users = User.query.all()
-    return '<br>'.join([f"User_id: {user.id} - User: {user.username}, Email: {user.email}" for user in users])
+    return '<br>'.join([f"User_id: {user.id}, User: {user.username}, Email: {user.email}" for user in users])
 
 # update record
 @crud_bp.route('/update_user/<int:user_id>/<new_email>')
