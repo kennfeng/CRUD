@@ -1,39 +1,74 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from extensions import db
-from models import User
+from models import Note
 
 crud_bp = Blueprint('crud', __name__)
 
-# create record
-@crud_bp.route('/add_user/<username>/<email>')
-def add_user(username, email):
-    new_user = User(username=username, email=email)
-    db.session.add(new_user)
-    db.session.commit()
-    return f'User {username} added.'
-
-# read record
-@crud_bp.route('/users')
-def get_users():
-    users = User.query.all()
-    return '<br>'.join([f"User_id: {user.id}, User: {user.username}, Email: {user.email}" for user in users])
-
-# update record
-@crud_bp.route('/update_user/<int:user_id>/<new_email>')
-def update_user(user_id, new_email):
-    user = User.query.get(user_id)
-    if user:
-        user.email = new_email
+# Create note
+@crud_bp.route('/add_note/', methods=['POST'])
+def add_note():
+    try:
+        data = request.get_json()
+        title = data.get('title')
+        content = data.get('content')
+        category = data.get('category')
+        
+        new_note = Note(title=title, content=content, category=category)
+        db.session.add(new_note)
         db.session.commit()
-        return f'User {user.username} updated to {new_email}.'
-    return 'User not found.'
 
-# delete record
-@crud_bp.route('/delete_user/<int:user_id>')
-def delete_user(user_id):
-    user = User.query.get(user_id)
-    if user:
-        db.session.delete(user)
+        return {'message': f'Note {title} added.', 'id': new_note.id}, 201
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+# Get all notes
+@crud_bp.route('/notes', methods = ['GET'])
+def get_notes():
+    try:
+        notes = Note.query.all()
+        if not notes:
+            return {'error': 'No notes found'}, 404
+        
+        notes_data = [{"id": note.id, "title": note.title, "content": note.content, 
+                       "category": note.category} for note in notes]
+        
+        return {'notes': notes_data}
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+# Update note
+@crud_bp.route('/update_note/<int:note_id>/', methods=['PUT'])
+def update_note(note_id):
+    try:
+        data = request.get_json()
+        new_title = data.get('title')
+        new_content = data.get('content')
+        new_category = data.get('category')
+
+        note = Note.query.get(note_id)
+        if not note:
+            return {'error': 'Note not found'}, 404
+
+        note.title = new_title
+        note.content = new_content
+        note.category = new_category
         db.session.commit()
-        return f'User {user.username} deleted!'
-    return 'User not found.'
+
+        return {'message': f'Note {note.title} updated.'}
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+# Delete note
+@crud_bp.route('/delete_note/<int:note_id>/', methods=['DELETE'])
+def delete_note(note_id):
+    try:
+        note = Note.query.get(note_id)
+        if not note:
+            return {'error': 'Note not found'}, 404
+
+        db.session.delete(note)
+        db.session.commit()
+
+        return {'message': f'Note with id {note_id} deleted successfully'}, 200
+    except Exception as e:
+        return {'error': str(e)}, 500

@@ -1,30 +1,28 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
-# imports
 from extensions import db
-from models import User
+from models import Note
 from CRUD import crud_bp
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
-    # database file
+    # Database files
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
 
-    # register
     app.register_blueprint(crud_bp)
     
     @app.route('/')
     def home():
-        return 'a'
+        return 'running...', 200
     
     return app
 
-# main
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
